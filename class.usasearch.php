@@ -6,7 +6,18 @@ class USASearch {
 	 * @static
 	 */
 	public static function plugin_activation() {
-		echo "this was a disaster";
+		if (! self::requirements_met()) {
+			$message = "this was a disaster.";
+			self::failure_to_activate( $message );
+		}
+	}
+
+	private static function requirements_met() {
+		return true;
+	}
+
+	private static function failure_to_activate( $message ) {
+		echo $message;
 		exit;
 	}
 }
