@@ -17,6 +17,7 @@ define( 'USASEARCH__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 register_activation_hook( __FILE__, array( 'USASearch', 'plugin_activation' ) );
 
 require_once( USASEARCH__PLUGIN_DIR . 'class.usasearch.php' );
+require_once( USASEARCH__PLUGIN_DIR . 'class.usasearch-document.php' );
 
 if ( is_admin() ) {
 	require_once( USASEARCH__PLUGIN_DIR . 'class.usasearch-admin.php' );
