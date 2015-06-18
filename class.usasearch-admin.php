@@ -24,6 +24,6 @@ class USASearch_Admin {
 	}
 
 	public static function display_page() {
-		echo "hej.";
+		USASearch::view( 'start' );
 	}
 }

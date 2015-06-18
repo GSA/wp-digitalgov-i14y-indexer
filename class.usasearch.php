@@ -20,4 +20,9 @@ class USASearch {
 		echo $message;
 		exit;
 	}
+
+	public static function view( $name ) {
+		$file = USASEARCH__PLUGIN_DIR . 'views/'. $name . '.php';
+		include( $file );
+	}
 }
