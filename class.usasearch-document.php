@@ -10,13 +10,17 @@ class USASearch_Document {
 
 	public static $ALREADY_INDEXED = 'usasearch_indexed';
 
-	public static function create( WP_POST $post ) {
+	public static $DOCUMENT_CREATED     = 0;
+	public static $DOCUMENT_UPDATED     = 1;
+	public static $DOCUMENT_INDEX_ERROR = 2;
+
+	public static function create_from_post( WP_POST $post ) {
 		$document = new self;
 		$document->populate_from_post( $post );
 		return $document;
 	}
 
-	private function populate_from_post( WP_POST $post ) {
+	public function populate_from_post( WP_POST $post ) {
 		$this->document_id = $post->ID;
 		$this->title = $post->post_title;
 		$this->path = get_permalink( $post->ID ); 
@@ -46,11 +50,13 @@ class USASearch_Document {
 
 		$res = wp_remote_request( $url, $headers );
 
-		if ( $res['response']['code'] == 201 ) {
+		if ( $res['response']['code'] == 201) {
 			update_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
-			return true;
+			return self::$DOCUMENT_CREATED;
+		} elseif ($res['response']['code'] == 200) {
+			return self::$DOCUMENT_UPDATED;
 		} else {
-			return false;
+			return self::$DOCUMENT_INDEX_ERROR;
 		}
 
 	}

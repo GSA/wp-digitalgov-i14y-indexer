@@ -22,8 +22,6 @@ class USASearch_Admin {
 	public static function enter_options() {
 		update_option( 'usasearch_handle', $_POST['handle'] );
 		update_option( 'usasearch_token', $_POST['token'] );
-		USASearch::view( 'post' );
-		exit;
 	}
 
 	public static function admin_menu() {
@@ -35,17 +33,19 @@ class USASearch_Admin {
 	}
 
 	public static function display_page() {
-		if (false) {
+		if ($_GET['view'] == 'index') {
+			self::display_index_page();
+		} else {
 			self::display_configuration_page();
-			return;
 		}
-
-		USASearch::view( 'start' );
 	}
 
 	public static function display_configuration_page() {
-		$handle = USASearch::get_handle();
-		$token  = USASearch::get_token();
+		USASearch::view( 'start' );
+	}
+
+	public static function display_index_page() {
+		USASearch::view( 'index' );
 	}
 
 	public static function get_server_connectivity() {
@@ -54,6 +54,10 @@ class USASearch_Admin {
 
 	public static function get_page_url( $page = 'config' ) {
 		$args = array( 'page' => 'usasearch-config' );
+
+		if ( $page == 'index' ) {
+			$args = array( 'page' => 'usasearch-config', 'view' => 'index' );
+		}
 
 		$url = add_query_arg( $args , admin_url('options-general.php') );
 
