@@ -1,12 +1,14 @@
 <?php
 
 class USASearch_Document {
-	public $document_id;          // required
+	public $document_id; // required
 	public $title;       // required
 	public $path;        // required
 	public $created;     // required
 	public $content;     // optional
 	public $changed;     // optional
+
+	public static $ALREADY_INDEXED = 'usasearch_indexed';
 
 	public static function create( WP_POST $post ) {
 		$document = new self;
@@ -24,6 +26,58 @@ class USASearch_Document {
 	}
 
 	public function save() {
-		print_r( $this );
+		$already_indexed = $this->already_indexed();
+
+		// url
+		$url = 'https://i14y.usa.gov/api/v1/documents';
+		if ( $already_indexed ) {
+			$url .= "/{$this->document_id}";
+		}
+
+		// headers
+		$credentials = USASearch::get_handle() .":". USASearch::get_token();
+		$headers = array(
+                        'headers' => array(
+                                'Authorization' => 'Basic '.base64_encode( $credentials )
+                        ),
+                        'body' => $this
+                );
+		$headers['method'] = ( $already_indexed ) ? 'PUT' : 'POST';
+
+		$res = wp_remote_request( $url, $headers );
+
+		if ( $res['response']['code'] == 201 ) {
+			update_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public function already_indexed() {
+		return get_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
+	}
+
+	public function delete() {
+		if ( ! $this->already_indexed() ) {
+			return false;
+		}
+
+		$url = "https://i14y.usa.gov/api/v1/documents/{$this->document_id}";
+
+		// headers
+		$credentials = USASearch::get_handle() .":". USASearch::get_token();
+		$headers = array(
+			'headers' => array(
+				'Authorization' => 'Basic '.base64_encode( $credentials )
+			),
+			'method' => 'DELETE'
+		);
+
+		wp_remote_request( $url, $headers );
+		delete_post_meta( $this->document_id, self::$ALREADY_INDEXED );
+
+		return $this;
 	}
 }

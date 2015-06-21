@@ -6,7 +6,7 @@ class USASearch {
 	 * @static
 	 */
 	public static function plugin_activation() {
-		if (! self::requirements_met()) {
+		if (! self::requirements_met() ) {
 			$message = "this was a disaster.";
 			self::failure_to_activate( $message );
 		}
@@ -24,5 +24,13 @@ class USASearch {
 	public static function view( $name ) {
 		$file = USASEARCH__PLUGIN_DIR . 'views/'. $name . '.php';
 		include( $file );
+	}
+
+	public static function get_handle() {
+		return get_option( 'usasearch_handle' );
+	}
+
+	public static function get_token() {
+		return get_option( 'usasearch_token' );
 	}
 }
