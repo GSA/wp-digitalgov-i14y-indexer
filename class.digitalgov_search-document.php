@@ -1,6 +1,6 @@
 <?php
 
-class USASearch_Document {
+class DigitalGov_Search_Document {
 	public $document_id; // required
 	public $title;       // required
 	public $path;        // required
@@ -8,11 +8,11 @@ class USASearch_Document {
 	public $content;     // optional
 	public $changed;     // optional
 
-	public static $ALREADY_INDEXED = 'usasearch_indexed';
-
 	public static $DOCUMENT_CREATED     = 0;
 	public static $DOCUMENT_UPDATED     = 1;
 	public static $DOCUMENT_INDEX_ERROR = 2;
+
+	private static $ALREADY_INDEXED = 'digitalgov_search_indexed';
 
 	public static function create_from_post( WP_POST $post ) {
 		$document = new self;
@@ -39,7 +39,7 @@ class USASearch_Document {
 		}
 
 		// headers
-		$credentials = USASearch::get_handle() .":". USASearch::get_token();
+		$credentials = DigitalGov_Search::get_handle() .":". DigitalGov_Search::get_token();
 		$headers = array(
                         'headers' => array(
                                 'Authorization' => 'Basic '.base64_encode( $credentials )
@@ -73,7 +73,7 @@ class USASearch_Document {
 		$url = "https://i14y.usa.gov/api/v1/documents/{$this->document_id}";
 
 		// headers
-		$credentials = USASearch::get_handle() .":". USASearch::get_token();
+		$credentials = DigitalGov_Search::get_handle() .":". DigitalGov_Search::get_token();
 		$headers = array(
 			'headers' => array(
 				'Authorization' => 'Basic '.base64_encode( $credentials )

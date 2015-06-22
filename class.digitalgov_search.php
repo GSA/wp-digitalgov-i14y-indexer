@@ -1,6 +1,6 @@
 <?php
 
-class USASearch {
+class DigitalGov_Search {
 	/**
 	 * Attached to activate_{ plugin_basename( __FILES__ ) } by register_activation_hook()
 	 * @static
@@ -22,15 +22,15 @@ class USASearch {
 	}
 
 	public static function view( $name ) {
-		$file = USASEARCH__PLUGIN_DIR . 'views/'. $name . '.php';
+		$file = DIGITALGOV_SEARCH__PLUGIN_DIR . 'views/'. $name . '.php';
 		include( $file );
 	}
 
 	public static function get_handle() {
-		return get_option( 'usasearch_handle' );
+		return get_option( 'digitalgov_search_handle' );
 	}
 
 	public static function get_token() {
-		return get_option( 'usasearch_token' );
+		return get_option( 'digitalgov_search_token' );
 	}
 }

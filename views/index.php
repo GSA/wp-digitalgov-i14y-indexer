@@ -6,7 +6,7 @@
         $posts_array = get_posts();
 
         foreach($posts_array as $post) {
-                $document = USASearch_Document::create_from_post( $post );
+                $document = DigitalGov_Search_Document::create_from_post( $post );
 		switch( $document->save() ) {
 			case $document::$DOCUMENT_CREATED:
 				$status = "Created document";
@@ -24,4 +24,4 @@
 </pre>
 
 <p>Indexing complete!</p>
-<a href="<?php echo esc_url( USASearch_Admin::get_page_url() ); ?>"><span class="button button-primary"><?php esc_attr_e('Finish', 'usasearch'); ?></span></a>
+<a href="<?php echo esc_url( DigitalGov_Search_Admin::get_page_url() ); ?>"><span class="button button-primary"><?php esc_attr_e('Finish', 'digitalgov_search'); ?></span></a>
