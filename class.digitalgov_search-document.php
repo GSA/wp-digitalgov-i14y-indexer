@@ -50,7 +50,7 @@ class DigitalGov_Search_Document {
 
 		$res = wp_remote_request( $url, $headers );
 
-		if ( $res['response']['code'] == 201) {
+		if ( $res['response']['code'] == 201 ) {
 			update_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
 			return self::$DOCUMENT_CREATED;
 		} elseif ($res['response']['code'] == 200) {

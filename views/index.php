@@ -3,7 +3,8 @@
 
 <pre>
 <?php
-        $posts_array = get_posts();
+	$args = array( 'post_status' => 'publish' );
+        $posts_array = get_posts( $args );
 
         foreach($posts_array as $post) {
                 $document = DigitalGov_Search_Document::create_from_post( $post );
