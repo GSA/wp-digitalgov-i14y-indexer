@@ -21,6 +21,14 @@ class DigitalGov_Search {
 		exit;
 	}
 
+	public static function update_post( $post_id ) {
+		$post = get_post( $post_id );
+		if ( $post->post_status == 'publish' ) {
+			$document = DigitalGov_Search_Document::create_from_post( $post );
+			$document->save();
+		}
+	}
+
 	public static function view( $name ) {
 		$file = DIGITALGOV_SEARCH__PLUGIN_DIR . 'views/'. $name . '.php';
 		include( $file );

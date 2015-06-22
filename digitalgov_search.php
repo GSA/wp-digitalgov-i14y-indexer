@@ -23,3 +23,5 @@ if ( is_admin() ) {
 	require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search-admin.php' );
 	add_action( 'init', array( 'DigitalGov_Search_Admin', 'init' ) );
 }
+
+add_action( 'save_post', array( 'DigitalGov_Search', 'update_post' ) );
