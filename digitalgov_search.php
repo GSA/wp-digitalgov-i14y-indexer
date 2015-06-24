@@ -1,14 +1,14 @@
 <?php
 /**
  * @package DigitalGov_Search
- * @version 0.1
+ * @version 0.0.1
  */
 /*
 Plugin Name: DigitalGov Search
 Plugin URI: https://github.com/gsa/wp_digitalgov_search
 Description: This plugin allows your agency to add pages from your agency's WordPress website into the DigitalGov Search platform.
 Author: GSA
-Version: 0.1
+Version: 0.0.1
 Author URI: http://www.gsa.gov
 */
 
