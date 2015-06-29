@@ -29,11 +29,11 @@ class DigitalGov_Search_Admin {
 	}
 
 	public static function load_menu() {
-		add_options_page( __('DigitalGov Search', 'digitalgov_search'), __('DigitalGov Search', 'digitalgov_search'), 'manage_options', 'digitalgov_search-config', array( 'DigitalGov_Search_Admin', 'display_page' ) );
+		add_options_page( __('DigitalGov Search i14y Indexer', 'digitalgov_search'), __('DigitalGov Search i14y Indexer', 'digitalgov_search'), 'manage_options', 'digitalgov_search-config', array( 'DigitalGov_Search_Admin', 'display_page' ) );
 	}
 
 	public static function display_page() {
-		if ($_GET['view'] == 'index') {
+		if ( DigitalGov_Search::credentials_set() && $_GET['view'] == 'index') {
 			self::display_index_page();
 		} else {
 			self::display_configuration_page();
@@ -45,8 +45,17 @@ class DigitalGov_Search_Admin {
 	}
 
 	public static function display_index_page() {
+		if ( ! DigitalGov_Search::credentials_set() ) {
+			self::display_credentials_error();
+			exit;
+		}
 		DigitalGov_Search::view( 'index' );
 	}
+
+	public static function display_credentials_error() {
+		DigitalGov_Search::view( 'notice' );
+	}
+
 
 	public static function get_page_url( $page = 'config' ) {
 		$args = array( 'page' => 'digitalgov_search-config' );

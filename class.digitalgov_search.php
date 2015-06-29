@@ -41,4 +41,8 @@ class DigitalGov_Search {
 	public static function get_token() {
 		return get_option( 'digitalgov_search_token' );
 	}
+
+	public static function credentials_set() {
+		return self::get_handle() && self::get_token();
+	}
 }

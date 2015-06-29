@@ -10,7 +10,9 @@
 		<input type="hidden" name="action" value="enter-key">
                 <p><input id="handle" name="handle" type="text" size="15" value="<?php echo DigitalGov_Search::get_handle(); ?>" placeholder="i14y drawer handle" class="regular-text code"></p>
                 <p><input id="token" name="token" type="text" size="15" value="<?php echo DigitalGov_Search::get_token(); ?>" placeholder="secret token" class="regular-text code"></p>
-                <input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php esc_attr_e('Save', 'digitalgov_search');?>">
-		<a href="<?php echo esc_url( DigitalGov_Search_Admin::get_page_url( 'index' ) ); ?>"><span class="button button-primary"><?php esc_attr_e('Index Wordpress', 'digitalgov_search'); ?></span></a>
+                <input type="submit" name="submit" id="submit" class="button button-secondary" value="<?php esc_attr_e('Save Credentials', 'digitalgov_search');?>">
+		<?php if ( DigitalGov_Search::credentials_set() ) { ?>
+			<a href="<?php echo esc_url( DigitalGov_Search_Admin::get_page_url( 'index' ) ); ?>"><span class="button button-primary"><?php esc_attr_e('Index Wordpress', 'digitalgov_search'); ?></span></a>
+		<?php } ?>
         </form>
 </div>
