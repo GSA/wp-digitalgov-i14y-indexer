@@ -1,4 +1,4 @@
-gitalGov Search Indexer for WordPress
+# DigitalGov Search Indexer for WordPress
 
 > The DigitalGov Search indexer allows users to add the posts and pages of their WordPress blog or website to the DigitalGov Search search engine.
 
