@@ -3,7 +3,7 @@
 
 <pre>
 <?php
-	$args = array( 'post_type' => 'any', 'post_status' => 'publish');
+	$args = array( 'post_type' => 'any', 'post_status' => 'publish', 'numberposts' => -1);
         $posts_array = get_posts( $args );
 
         foreach($posts_array as $post) {
