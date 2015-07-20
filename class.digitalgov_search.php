@@ -2,9 +2,9 @@
 
 class DigitalGov_Search {
 	/**
-	 * Attached to activate_{ plugin_basename( __FILES__ ) } by register_activation_hook()
-	 * @static
-	 */
+         * Attached to activate_{ plugin_basename( __FILES__ ) } by register_activation_hook()
+         * @static
+         */
 	public static function plugin_activation() {
 		if (! self::requirements_met() ) {
 			$message = "this was a disaster.";

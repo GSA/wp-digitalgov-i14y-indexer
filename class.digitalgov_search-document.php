@@ -11,6 +11,7 @@ class DigitalGov_Search_Document {
 	public static $DOCUMENT_CREATED     = 0;
 	public static $DOCUMENT_UPDATED     = 1;
 	public static $DOCUMENT_INDEX_ERROR = 2;
+	public static $API_ERROR            = 3;
 
 	private static $ALREADY_INDEXED = 'digitalgov_search_indexed';
 
@@ -23,7 +24,7 @@ class DigitalGov_Search_Document {
 	public function populate_from_post( WP_POST $post ) {
 		$this->document_id = $post->ID;
 		$this->title = $post->post_title;
-		$this->path = get_permalink( $post->ID ); 
+		$this->path = get_permalink( $post->ID );
 		$this->created = $post->post_date;
 		$this->content = $post->post_content;
 		$this->changed = $post->post_modified;
@@ -49,6 +50,11 @@ class DigitalGov_Search_Document {
 		$headers['method'] = ( $already_indexed ) ? 'PUT' : 'POST';
 
 		$res = wp_remote_request( $url, $headers );
+		if ( is_a( $res, 'WP_ERROR' ) ) {
+			echo "Are your credentials set correctly?\nPlease report this error to DigitalGov Search\n\n";
+			print_r( $res );
+			return self::$API_ERROR;
+		}
 
 		if ( $res['response']['code'] == 201 ) {
 			update_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
@@ -58,7 +64,6 @@ class DigitalGov_Search_Document {
 		} else {
 			return self::$DOCUMENT_INDEX_ERROR;
 		}
-
 	}
 
 	public function already_indexed() {

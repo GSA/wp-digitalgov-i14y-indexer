@@ -18,6 +18,9 @@
 			case $document::$DOCUMENT_INDEX_FAILURE:
 				$status = "Failed to index";
 			break;
+			case $document::$API_ERROR:
+				$status = "API Error: Failed to index";
+			break;
 		}
 		echo "{$status}: {$document->title}\n";
         }
