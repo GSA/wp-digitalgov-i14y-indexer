@@ -15,7 +15,7 @@
 			case $document::$DOCUMENT_UPDATED:
 				$status = "Updated document";
 			break;
-			case $document::$DOCUMENT_INDEX_FAILURE:
+			case $document::$DOCUMENT_INDEX_ERROR:
 				$status = "Failed to index";
 			break;
 			case $document::$API_ERROR:
