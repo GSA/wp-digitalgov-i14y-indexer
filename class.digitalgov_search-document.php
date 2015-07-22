@@ -51,8 +51,6 @@ class DigitalGov_Search_Document {
 
 		$res = wp_remote_request( $url, $headers );
 		if ( is_a( $res, 'WP_ERROR' ) ) {
-			echo "Are your credentials set correctly?\nPlease report this error to DigitalGov Search\n\n";
-			print_r( $res );
 			return self::$API_ERROR;
 		}
 

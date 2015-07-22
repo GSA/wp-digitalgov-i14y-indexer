@@ -3,11 +3,12 @@
 
 <pre>
 <?php
+	$MAX_ATTEMPTS_PER_POST = 3;
 	$args = array( 'post_type' => 'any', 'post_status' => 'publish', 'posts_per_page' => -1);
         $posts_array = get_posts( $args );
 
-        foreach($posts_array as $post) {
-                $document = DigitalGov_Search_Document::create_from_post( $post );
+	function saveDocument($document) {
+		$retry = false;
 		switch( $document->save() ) {
 			case $document::$DOCUMENT_CREATED:
 				$status = "Created document";
@@ -20,9 +21,36 @@
 			break;
 			case $document::$API_ERROR:
 				$status = "API Error: Failed to index";
+				$retry = true;
 			break;
 		}
-		echo "{$status}: {$document->title}\n";
+		$message = "{$status}: {$document->title}";
+
+		if ($retry) {
+			throw new Exception($status);
+		} else {
+			echo $message . "\n";
+		}
+	}
+
+        foreach($posts_array as $post) {
+		$attempts = 0;
+                $document = DigitalGov_Search_Document::create_from_post( $post );
+
+		do {
+			try {
+				saveDocument($document);
+			} catch (Exception $e) {
+				$attempts++;
+				echo "{$e->getMessage()} {$document->title}.";
+				if ($attempts < $MAX_ATTEMPTS_PER_POST) {
+					echo " Trying again...";
+				}
+				echo "\n";
+				continue;
+			}
+			break;
+		} while ($attempts < $MAX_ATTEMPTS_PER_POST);
         }
 ?>
 </pre>
