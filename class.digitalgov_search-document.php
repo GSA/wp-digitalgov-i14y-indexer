@@ -30,6 +30,22 @@ class DigitalGov_Search_Document {
 		$this->changed = $post->post_modified;
 	}
 
+	public function set_path($path) {
+		$this->path = $path;
+	}
+
+	public static function filter_url($url) {
+		$parsed_url = parse_url($url);
+
+		function remove_edit_from_host($host) {
+			return str_replace('edit.', '', $host);
+		}
+
+		$parsed_url['host'] = remove_edit_from_host($parsed_url['host']);
+
+		return $parsed_url;
+	}
+
 	public function save() {
 		$already_indexed = $this->already_indexed();
 
@@ -39,13 +55,16 @@ class DigitalGov_Search_Document {
 			$url .= "/{$this->document_id}";
 		}
 
+		$obj = clone $this;
+		$obj->set_path(self::filter_url($this->path));
+
 		// headers
 		$credentials = DigitalGov_Search::get_handle() .":". DigitalGov_Search::get_token();
 		$headers = array(
                         'headers' => array(
                                 'Authorization' => 'Basic '.base64_encode( $credentials )
                         ),
-                        'body' => $this
+                        'body' => $obj
                 );
 		$headers['method'] = ( $already_indexed ) ? 'PUT' : 'POST';
 

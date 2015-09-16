@@ -4,7 +4,11 @@
 <pre>
 <?php
 	$MAX_ATTEMPTS_PER_POST = 3;
-	$args = array( 'post_type' => 'any', 'post_status' => 'publish', 'posts_per_page' => -1);
+	$args = array(
+		'post_type' => 'any',
+		'post_status' => 'publish',
+		'posts_per_page' => -1
+	);
         $posts_array = get_posts( $args );
 
 	function saveDocument($document) {
