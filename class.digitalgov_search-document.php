@@ -22,7 +22,9 @@ class DigitalGov_Search_Document {
 	}
 
 	public function populate_from_post( WP_POST $post ) {
-		$this->document_id = $post->ID;
+		// use document ids like `blog-title-123`
+		// if the blog name changes, this will break indexing, implicitly reindexing everything
+		$this->document_id = sanitize_title(get_bloginfo()) . "-" . $post->ID;
 		$this->title = $post->post_title;
 		$this->path = get_permalink( $post->ID );
 		$this->created = $post->post_date;
