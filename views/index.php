@@ -3,6 +3,8 @@
 
 <pre>
 <?php
+
+	class WordPressCouldNotConnectToAPIException extends Exception {};
 	$MAX_ATTEMPTS_PER_POST = 3;
 	$args = array(
 		'post_type' => 'any',
@@ -12,7 +14,6 @@
         $posts_array = get_posts( $args );
 
 	function saveDocument($document) {
-		$retry = false;
 		switch( $document->save() ) {
 			case $document::$DOCUMENT_CREATED:
 				$status = "Created document";
@@ -25,36 +26,35 @@
 			break;
 			case $document::$API_ERROR:
 				$status = "API Error: Failed to index";
-				$retry = true;
+				throw new WordPressCouldNotConnectToAPIException($status);
 			break;
 		}
-		$message = "{$status}: {$document->title}";
+		echo "{$status}: {$document->title}" . "\n";
+	}
 
-		if ($retry) {
-			throw new Exception($status);
-		} else {
-			echo $message . "\n";
-		}
+	function attemptToSaveDocument($document, $attempt) {
+			try {
+				saveDocument($document);
+			} catch (APICouldNotSaveDocumentException $e) {
+				echo "Error saving document: {$e->getMessage()}";
+			} catch (WordPressCouldNotConnectToAPIException $e) {
+				echo "{$e->getMessage()} {$document->title}.";
+				if (++$attempt < $MAX_ATTEMPTS_PER_POST) {
+					echo " Trying again...";
+					attemptToSaveDocument($document, $attempt);
+				}
+				echo "\n";
+			}
 	}
 
         foreach($posts_array as $post) {
-		$attempts = 0;
-                $document = DigitalGov_Search_Document::create_from_post( $post );
-
-		do {
-			try {
-				saveDocument($document);
-			} catch (Exception $e) {
-				$attempts++;
-				echo "{$e->getMessage()} {$document->title}.";
-				if ($attempts < $MAX_ATTEMPTS_PER_POST) {
-					echo " Trying again...";
-				}
-				echo "\n";
-				continue;
-			}
-			break;
-		} while ($attempts < $MAX_ATTEMPTS_PER_POST);
+		try {
+			$document = DigitalGov_Search_Document::create_from_post( $post );
+			attemptToSaveDocument($document, 0);
+		} catch (Exception $e) {
+			echo "Unknown Exception: {$e->getMessage()}";
+		}
+		continue;
         }
 ?>
 </pre>

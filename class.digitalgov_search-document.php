@@ -1,4 +1,5 @@
 <?php
+class APICouldNotSaveDocumentException extends Exception {};
 
 class DigitalGov_Search_Document {
 	public $document_id; // required
@@ -24,12 +25,16 @@ class DigitalGov_Search_Document {
 	public function populate_from_post( WP_POST $post ) {
 		// use document ids like `blog-title-123`
 		// if the blog name changes, this will break indexing, implicitly reindexing everything
-		$this->document_id = sanitize_title(get_bloginfo()) . "-" . $post->ID;
+		$this->document_id = $post->ID;
 		$this->title = $post->post_title;
 		$this->path = get_permalink( $post->ID );
 		$this->created = $post->post_date;
 		$this->content = $post->post_content;
 		$this->changed = $post->post_modified;
+	}
+
+	public function set_id($id) {
+		$this->document_id = $id;
 	}
 
 	public function set_path($path) {
@@ -39,13 +44,13 @@ class DigitalGov_Search_Document {
 	public static function filter_url($url) {
 		$parsed_url = parse_url($url);
 
-		function remove_edit_from_host($host) {
+		$remove_edit_from_host = function($host) {
 			return str_replace('edit.', '', $host);
-		}
+		};
 
-		$parsed_url['host'] = remove_edit_from_host($parsed_url['host']);
+		$parsed_url['host'] = $remove_edit_from_host($parsed_url['host']);
 
-		return $parsed_url;
+		return "{$parsed_url['scheme']}://{$parsed_url['host']}{$parsed_url['path']}";
 	}
 
 	public function save() {
@@ -58,6 +63,7 @@ class DigitalGov_Search_Document {
 		}
 
 		$obj = clone $this;
+		$obj->set_id(sanitize_title(get_bloginfo()) . "-" . $this->document_id);
 		$obj->set_path(self::filter_url($this->path));
 
 		// headers
@@ -81,7 +87,7 @@ class DigitalGov_Search_Document {
 		} elseif ($res['response']['code'] == 200) {
 			return self::$DOCUMENT_UPDATED;
 		} else {
-			return self::$DOCUMENT_INDEX_ERROR;
+			throw new APICouldNotSaveDocumentException($res['body']);
 		}
 	}
 
