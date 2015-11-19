@@ -87,7 +87,8 @@ class DigitalGov_Search_Document {
 		} elseif ($res['response']['code'] == 200) {
 			return self::$DOCUMENT_UPDATED;
 		} else {
-			throw new APICouldNotSaveDocumentException($res['body']);
+			$body = json_decode($res['body']);
+			throw new APICouldNotSaveDocumentException($body->developer_message);
 		}
 	}
 

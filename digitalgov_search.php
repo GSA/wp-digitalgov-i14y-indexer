@@ -20,6 +20,7 @@ require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search.php' );
 require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search-document.php' );
 
 add_action( 'save_post', array( 'DigitalGov_Search', 'update_post' ) );
+add_action( 'admin_head-post.php', array( 'DigitalGov_Search_Admin', 'add_indexer_notice' ) );
 
 if ( is_admin() ) {
 	require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search-admin.php' );

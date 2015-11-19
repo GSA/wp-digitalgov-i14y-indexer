@@ -24,8 +24,13 @@ class DigitalGov_Search {
 	public static function update_post( $post_id ) {
 		$post = get_post( $post_id );
 		if ( $post->post_status == 'publish' ) {
-			$document = DigitalGov_Search_Document::create_from_post( $post );
-			$document->save();
+			try {
+				$document = DigitalGov_Search_Document::create_from_post( $post );
+				$document->save();
+			} catch (APICouldNotSaveDocumentException $e) {
+				update_option('digitalgov_search_admin_message', $e->getMessage());
+				update_option('digitalgov_search_display_post_error_message', 1);
+			}
 		}
 	}
 
