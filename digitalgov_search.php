@@ -1,7 +1,7 @@
 <?php
 /**
  * @package DigitalGov_Search
- * @version 0.0.1
+ * @version 0.0.2
  */
 /*
 Plugin Name: DigitalGov Search i14y Content Indexer

@@ -37,12 +37,9 @@ $ rm -f dgsearch.zip # cleanup
 To create keys for your website, log in to the search administration portal ([https://search.usa.gov/admin](https://search.usa.gov/admin)) and navigate to `Content -> i14y Drawers`. Once you've created a new drawer, you will receive an API token which is used to authenticate your WordPress website with our search service.
 
 ### Version
-0.1.0
+
+0.0.2
 
 ### Development
 
-Want to contribute? Great! We review pull requests.
-
-### License
-
-MIT
+Want to contribute? Great! We're quite responsive to pull requests.
