@@ -74,7 +74,12 @@ class DigitalGov_Search_Document {
 
 	public static function get_document_id( $post_id ) {
 		if (self::already_indexed($post_id)) {
-			return get_post_meta( $post_id, self::$DOCUMENT_ID, true );
+			$id = get_post_meta( $post_id, self::$DOCUMENT_ID, true );
+			if ($id == null) { // regression case for old documents that weren't indexed in the db originally
+				$id = self::create_document_id($post_id);
+				update_post_meta( $post_id, self::$DOCUMENT_ID, $id );
+			}
+			return $id;
 		} else {
 			return self::create_document_id($post_id);
 		}
@@ -91,7 +96,7 @@ class DigitalGov_Search_Document {
 
 		DigitalGov_Search_API::unindex_document($this);
 
-		delete_post_meta( $this->document_id, self::$ALREADY_INDEXED );
+		delete_post_meta( $post_id, self::$ALREADY_INDEXED );
 
 		return self::$DOCUMENT_UNINDEXED;
 	}
