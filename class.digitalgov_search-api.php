@@ -34,7 +34,7 @@ class DigitalGov_Search_API {
 	}
 
 	public static function unindex_document($document) {
-		$url = "https://i14y.usa.gov/api/v1/documents/{$document->document_id}";
+		$url = self::$API_URL . "/{$document->document_id}";
 
 		// headers
 		$credentials = DigitalGov_Search::get_handle() .":". DigitalGov_Search::get_token();
