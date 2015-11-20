@@ -7,7 +7,7 @@ class DigitalGov_Search {
          */
 	public static function plugin_activation() {
 		if (! self::requirements_met() ) {
-			$message = "this was a disaster.";
+			$message = "DigitalGov Search i14y Indexer plugin failed to activate!";
 			self::failure_to_activate( $message );
 		}
 	}
