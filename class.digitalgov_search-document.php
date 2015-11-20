@@ -1,5 +1,5 @@
 <?php
-class APICouldNotSaveDocumentException extends Exception {};
+class APICouldNotIndexDocumentException extends Exception {};
 
 class DigitalGov_Search_Document {
 	public $document_id; // required
@@ -11,10 +11,11 @@ class DigitalGov_Search_Document {
 
 	public static $DOCUMENT_CREATED     = 0;
 	public static $DOCUMENT_UPDATED     = 1;
-	public static $DOCUMENT_INDEX_ERROR = 2;
-	public static $API_ERROR            = 3;
+	public static $API_ERROR            = 2;
+	public static $DOCUMENT_UNINDEXED   = 3;
 
 	private static $ALREADY_INDEXED = 'digitalgov_search_indexed';
+	private static $DOCUMENT_ID = 'digitalgov_search_document_id';
 
 	public static function create_from_post( WP_POST $post ) {
 		$document = new self;
@@ -25,23 +26,15 @@ class DigitalGov_Search_Document {
 	public function populate_from_post( WP_POST $post ) {
 		// use document ids like `blog-title-123`
 		// if the blog name changes, this will break indexing, implicitly reindexing everything
-		$this->document_id = $post->ID;
+		$this->document_id = self::get_document_id($post->ID);
 		$this->title = $post->post_title;
-		$this->path = get_permalink( $post->ID );
+		$this->path = self::apply_url_filters(get_permalink( $post->ID ));
 		$this->created = $post->post_date;
 		$this->content = $post->post_content;
 		$this->changed = $post->post_modified;
 	}
 
-	public function set_id($id) {
-		$this->document_id = $id;
-	}
-
-	public function set_path($path) {
-		$this->path = $path;
-	}
-
-	public static function filter_url($url) {
+	public static function apply_url_filters($url) {
 		$parsed_url = parse_url($url);
 
 		$remove_edit_from_host = function($host) {
@@ -53,68 +46,53 @@ class DigitalGov_Search_Document {
 		return "{$parsed_url['scheme']}://{$parsed_url['host']}{$parsed_url['path']}";
 	}
 
-	public function save() {
-		$already_indexed = $this->already_indexed();
 
-		// url
-		$url = 'https://i14y.usa.gov/api/v1/documents';
-		if ( $already_indexed ) {
-			$url .= "/{$this->document_id}";
-		}
+	public function index( $post_id ) {
+		$already_indexed = self::already_indexed( $post_id );
 
-		$obj = clone $this;
-		$obj->set_id(sanitize_title(get_bloginfo()) . "-" . $this->document_id);
-		$obj->set_path(self::filter_url($this->path));
-
-		// headers
-		$credentials = DigitalGov_Search::get_handle() .":". DigitalGov_Search::get_token();
-		$headers = array(
-                        'headers' => array(
-                                'Authorization' => 'Basic '.base64_encode( $credentials )
-                        ),
-                        'body' => $obj
-                );
-		$headers['method'] = ( $already_indexed ) ? 'PUT' : 'POST';
-
-		$res = wp_remote_request( $url, $headers );
+		$res = ( $already_indexed ) ? DigitalGov_Search_API::update_existing_document($this) : DigitalGov_Search_API::index_new_document($this);
 		if ( is_a( $res, 'WP_ERROR' ) ) {
 			return self::$API_ERROR;
 		}
 
 		if ( $res['response']['code'] == 201 ) {
-			update_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
+			update_post_meta( $post_id, self::$ALREADY_INDEXED, true );
+			update_post_meta( $post_id, self::$DOCUMENT_ID, $this->document_id );
 			return self::$DOCUMENT_CREATED;
 		} elseif ($res['response']['code'] == 200) {
+			update_post_meta( $post_id, self::$ALREADY_INDEXED, true );
 			return self::$DOCUMENT_UPDATED;
 		} else {
 			$body = json_decode($res['body']);
-			throw new APICouldNotSaveDocumentException($body->developer_message);
+			throw new APICouldNotIndexDocumentException($body->developer_message);
 		}
 	}
 
-	public function already_indexed() {
-		return get_post_meta( $this->document_id, self::$ALREADY_INDEXED, true );
+	public static function already_indexed( $post_id ) {
+		return get_post_meta( $post_id, self::$ALREADY_INDEXED, true );
 	}
 
-	public function delete() {
-		if ( ! $this->already_indexed() ) {
+	public static function get_document_id( $post_id ) {
+		if (self::already_indexed($post_id)) {
+			return get_post_meta( $post_id, self::$DOCUMENT_ID, true );
+		} else {
+			return self::create_document_id($post_id);
+		}
+	}
+
+	public function create_document_id($post_id) {
+		return sanitize_title(get_bloginfo()) . "-" . $post_id;
+	}
+
+	public function unindex( $post_id ) {
+		if ( ! self::already_indexed( $post_id ) ) {
 			return false;
 		}
 
-		$url = "https://i14y.usa.gov/api/v1/documents/{$this->document_id}";
+		DigitalGov_Search_API::unindex_document($this);
 
-		// headers
-		$credentials = DigitalGov_Search::get_handle() .":". DigitalGov_Search::get_token();
-		$headers = array(
-			'headers' => array(
-				'Authorization' => 'Basic '.base64_encode( $credentials )
-			),
-			'method' => 'DELETE'
-		);
-
-		wp_remote_request( $url, $headers );
 		delete_post_meta( $this->document_id, self::$ALREADY_INDEXED );
 
-		return $this;
+		return self::$DOCUMENT_UNINDEXED;
 	}
 }

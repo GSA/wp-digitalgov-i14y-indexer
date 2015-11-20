@@ -18,9 +18,12 @@ register_activation_hook( __FILE__, array( 'DigitalGov_Search', 'plugin_activati
 
 require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search.php' );
 require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search-document.php' );
+require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search-api.php' );
 
 add_action( 'save_post', array( 'DigitalGov_Search', 'update_post' ) );
+add_action( 'before_delete_post', array( 'DigitalGov_Search', 'delete_post' ) );
 add_action( 'admin_head-post.php', array( 'DigitalGov_Search_Admin', 'add_indexer_notice' ) );
+add_action( 'transition_post_status', array( 'DigitalGov_Search', 'unindex_post_when_unpublished' ), 10, 3 );
 
 if ( is_admin() ) {
 	require_once( DIGITALGOV_SEARCH__PLUGIN_DIR . 'class.digitalgov_search-admin.php' );

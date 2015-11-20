@@ -1,5 +1,5 @@
-<h2>DigitalGov Search</h2>
-<p>DigitalGov Search is used to index your agency's WordPress website.</p>
+<h2>DigitalGov Search i14y Indexer</h2>
+<p>DigitalGov Search is used to index your agency's WordPress website's content with the DigitalGov Search search service.</p>
 
 <pre>
 <?php
@@ -13,35 +13,32 @@
 	);
         $posts_array = get_posts( $args );
 
-	function saveDocument($document) {
-		switch( $document->save() ) {
+	function indexDocument($post_id, $document) {
+		switch( $document->index( $post_id ) ) {
 			case $document::$DOCUMENT_CREATED:
 				$status = "Created document";
 			break;
 			case $document::$DOCUMENT_UPDATED:
 				$status = "Updated document";
 			break;
-			case $document::$DOCUMENT_INDEX_ERROR:
-				$status = "Failed to index";
-			break;
 			case $document::$API_ERROR:
 				$status = "API Error: Failed to index";
 				throw new WordPressCouldNotConnectToAPIException($status);
 			break;
 		}
-		echo "{$status}: {$document->title}" . "\n";
+		echo "<span style=\"color:#7ad03a\">{$status} \"{$document->title}\" (post id {$document->document_id})" . "</span>\n";
 	}
 
-	function attemptToSaveDocument($document, $attempt) {
+	function attemptToIndexDocument($post_id, $document, $attempt) {
 			try {
-				saveDocument($document);
-			} catch (APICouldNotSaveDocumentException $e) {
-				echo "Error saving document: {$e->getMessage()}";
+				indexDocument($post_id, $document);
+			} catch (APICouldNotIndexDocumentException $e) {
+				echo "<span style=\"color:#dd3d36\">Error indexing document \"{$document->title}\": {$e->getMessage()}</span>\n";
 			} catch (WordPressCouldNotConnectToAPIException $e) {
 				echo "{$e->getMessage()} {$document->title}.";
 				if (++$attempt < $MAX_ATTEMPTS_PER_POST) {
 					echo " Trying again...";
-					attemptToSaveDocument($document, $attempt);
+					attemptToIndexDocument($post_id, $document, $attempt);
 				}
 				echo "\n";
 			}
@@ -50,7 +47,7 @@
         foreach($posts_array as $post) {
 		try {
 			$document = DigitalGov_Search_Document::create_from_post( $post );
-			attemptToSaveDocument($document, 0);
+			attemptToIndexDocument($post->ID, $document, 0);
 		} catch (Exception $e) {
 			echo "Unknown Exception: {$e->getMessage()}";
 		}

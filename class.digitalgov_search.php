@@ -23,15 +23,31 @@ class DigitalGov_Search {
 
 	public static function update_post( $post_id ) {
 		$post = get_post( $post_id );
+		$document = DigitalGov_Search_Document::create_from_post( $post );
 		if ( $post->post_status == 'publish' ) {
 			try {
-				$document = DigitalGov_Search_Document::create_from_post( $post );
-				$document->save();
-			} catch (APICouldNotSaveDocumentException $e) {
+				$document->index( $post_id );
+			} catch (APICouldNotIndexDocumentException $e) {
 				update_option('digitalgov_search_admin_message', $e->getMessage());
 				update_option('digitalgov_search_display_post_error_message', 1);
 			}
 		}
+	}
+
+	public static function unindex_post_when_unpublished($new_status, $old_status, $post) {
+		if ( $old_status == 'publish' && $new_status != 'publish' ) {
+			$document = DigitalGov_Search_Document::create_from_post( $post );
+			try {
+				$document->unindex( $post->ID );
+			} catch (Exception $e) {
+			}
+		}
+	}
+
+	public static function delete_post( $post_id ) {
+		$post = get_post( $post_id );
+		$document = DigitalGov_Search_Document::create_from_post( $post );
+		$document->unindex();
 	}
 
 	public static function view( $name ) {
