@@ -8,7 +8,7 @@ Plugin Name: DigitalGov Search i14y Content Indexer
 Plugin URI: https://github.com/GSA/wp-digitalgov-i14y-indexer
 Description: This plugin allows your agency to add pages from your agency's WordPress website into the DigitalGov Search platform.
 Author: GSA
-Version: 0.0.1
+Version: 0.0.2
 Author URI: http://www.gsa.gov
 */
 
