@@ -22,7 +22,7 @@ $ cd wp-content/plugins
 
 Then, install the plugin via `git`
 ```sh
-$ git clone https://github.com/GSA/wp-search-indexer.git digitalgov_search
+$ git clone https://github.com/GSA/wp-digitalgov-i14y-indexer.git digitalgov_search
 ```
 
 Or by pulling down the .zip with `wget` and using `unzip` to unpack it.
