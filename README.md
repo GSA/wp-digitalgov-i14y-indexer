@@ -27,7 +27,7 @@ $ git clone https://github.com/GSA/wp-search-indexer.git digitalgov_search
 
 Or by pulling down the .zip with `wget` and using `unzip` to unpack it.
 ```sh
-$ wget -O dgsearch.zip https://github.com/GSA/wp-search-indexer/archive/master.zip
+$ wget -O dgsearch.zip https://github.com/GSA/wp-digitalgov-i14y-indexer/archive/master.zip
 $ unzip dgsearch.zip -d digitalgov_search
 $ rm -f dgsearch.zip # cleanup
 ```
