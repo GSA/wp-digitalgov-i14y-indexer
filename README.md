@@ -1,6 +1,6 @@
 # DigitalGov Search Indexer for WordPress
 
-> The DigitalGov Search indexer allows users to add the posts and pages of their WordPress blog or website to the DigitalGov Search search engine.
+> The DigitalGov Search indexer allows WordPress administrators to index the posts and pages of their WordPress blog or website with that DigitalGov Search hosted search service.
 
 ### Installation
 
