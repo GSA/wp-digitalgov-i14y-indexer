@@ -85,7 +85,7 @@ class DigitalGov_Search_Document {
 		}
 	}
 
-	public function create_document_id($post_id) {
+	public static function create_document_id($post_id) {
 		return sanitize_title(get_bloginfo()) . "-" . $post_id;
 	}
 

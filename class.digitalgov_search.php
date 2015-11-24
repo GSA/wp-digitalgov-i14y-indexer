@@ -47,7 +47,7 @@ class DigitalGov_Search {
 	public static function delete_post( $post_id ) {
 		$post = get_post( $post_id );
 		$document = DigitalGov_Search_Document::create_from_post( $post );
-		$document->unindex();
+		$document->unindex( $post_id );
 	}
 
 	public static function view( $name ) {
