@@ -6,12 +6,6 @@
 
 	class WordPressCouldNotConnectToAPIException extends Exception {};
 	$MAX_ATTEMPTS_PER_POST = 3;
-	$args = array(
-		'post_type' => 'any',
-		'post_status' => 'publish',
-		'posts_per_page' => -1
-	);
-        $posts_array = get_posts( $args );
 
 	function indexDocument($post_id, $document) {
 		switch( $document->index( $post_id ) ) {
@@ -29,6 +23,10 @@
 		echo "<span style=\"color:#7ad03a\">{$status} \"{$document->title}\" (post id {$document->document_id})" . "</span>\n";
 	}
 
+	function deindexDocument($post_id, $document) {
+		$document->unindex($post_id);
+	}
+
 	function attemptToIndexDocument($post_id, $document, $attempt) {
 			try {
 				indexDocument($post_id, $document);
@@ -44,9 +42,16 @@
 			}
 	}
 
+	$args = array(
+		'post_type' => 'any',
+		'post_status' => 'publish',
+		'posts_per_page' => -1
+	);
+        $posts_array = get_posts( $args );
         foreach($posts_array as $post) {
 		try {
 			$document = DigitalGov_Search_Document::create_from_post( $post );
+			deindexDocument($post->ID, $document);
 			attemptToIndexDocument($post->ID, $document, 0);
 		} catch (Exception $e) {
 			echo "Unknown Exception: {$e->getMessage()}";

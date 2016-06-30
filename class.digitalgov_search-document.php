@@ -90,10 +90,6 @@ class DigitalGov_Search_Document {
 	}
 
 	public function unindex( $post_id ) {
-		if ( ! self::already_indexed( $post_id ) ) {
-			return false;
-		}
-
 		DigitalGov_Search_API::unindex_document($this);
 
 		delete_post_meta( $post_id, self::$ALREADY_INDEXED );
