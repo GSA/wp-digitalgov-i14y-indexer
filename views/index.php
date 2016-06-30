@@ -52,7 +52,9 @@
 		try {
 			$document = DigitalGov_Search_Document::create_from_post( $post );
 			deindexDocument($post->ID, $document);
-			attemptToIndexDocument($post->ID, $document, 0);
+			if ( DigitalGov_Search::is_indexable( $post ) ) {
+				attemptToIndexDocument($post->ID, $document, 0);
+			}
 		} catch (Exception $e) {
 			echo "Unknown Exception: {$e->getMessage()}";
 		}

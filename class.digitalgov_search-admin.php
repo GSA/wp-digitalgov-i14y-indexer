@@ -81,4 +81,8 @@ class DigitalGov_Search_Admin {
 
 		return $url;
 	}
+
+	public static function display_meta_box() {
+		DigitalGov_Search::view('meta');
+	}
 }

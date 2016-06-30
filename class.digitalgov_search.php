@@ -1,6 +1,8 @@
 <?php
 
 class DigitalGov_Search {
+	private static $INDEXABLE = 'digitalgov_search_indexable';
+
 	/**
          * Attached to activate_{ plugin_basename( __FILES__ ) } by register_activation_hook()
          * @static
@@ -22,15 +24,20 @@ class DigitalGov_Search {
 	}
 
 	public static function update_post( $post_id ) {
+		$indexable = $_REQUEST['index'];
+		update_post_meta( $post_id, self::$INDEXABLE, $indexable );
+
 		$post = get_post( $post_id );
 		$document = DigitalGov_Search_Document::create_from_post( $post );
-		if ( $post->post_status == 'publish' ) {
+		if ( $post->post_status == 'publish' && $indexable === 'yes') {
 			try {
 				$document->index( $post_id );
 			} catch (APICouldNotIndexDocumentException $e) {
 				update_option('digitalgov_search_admin_message', $e->getMessage());
 				update_option('digitalgov_search_display_post_error_message', 1);
 			}
+		} else {
+			$document->unindex( $post->ID );
 		}
 	}
 
@@ -65,5 +72,11 @@ class DigitalGov_Search {
 
 	public static function credentials_set() {
 		return self::get_handle() && self::get_token();
+	}
+
+	public static function is_indexable( $post ) {
+		$indexable = get_post_meta( $post->ID, self::$INDEXABLE, true);
+		if ($indexable == 'no') return false;
+		else return true;
 	}
 }
