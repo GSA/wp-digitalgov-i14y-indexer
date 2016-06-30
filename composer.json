@@ -1,0 +1,12 @@
+{
+	"name": "gsa/wp-digitalgov-i14y-indexer",
+	"description": "This plugin allows your agency to add pages from your agency's WordPress website into the DigitalGov Search platform.",
+	"keywords": [
+		"wordpress"
+	],
+	"license": "CC0",
+	"type": "wordpress-plugin",
+	"require": {
+		"composer/installers": "~1.0"
+	 }
+}
