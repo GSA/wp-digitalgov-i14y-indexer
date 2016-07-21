@@ -38,7 +38,7 @@ To create keys for your website, log in to the search administration portal ([ht
 
 ### Version
 
-0.0.2
+0.0.3
 
 ### Development
 
