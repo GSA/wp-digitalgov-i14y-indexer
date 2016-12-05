@@ -1,0 +1,14 @@
+name: wp-digitalgov-i14y-indexer
+description: 'A WordPress plugin to support realtime indexing for web content using the DigitalGov Search indexing API i14y.'
+license: null
+openSourceProject: 1
+governmentWideReuseProject: 1
+tags:
+    - GSA
+    - DigitalGovSearch
+    - search
+    - indexing
+    - WordPress
+    - plugin
+contact:
+    email: dawn.mccleskey@gsa.gov
