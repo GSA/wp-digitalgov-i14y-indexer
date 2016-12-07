@@ -1,6 +1,6 @@
 name: wp-digitalgov-i14y-indexer
 description: 'A WordPress plugin to support realtime indexing for web content using the DigitalGov Search indexing API i14y.'
-license: null
+license: 'https://creativecommons.org/publicdomain/zero/1.0'
 openSourceProject: 1
 governmentWideReuseProject: 1
 tags:
