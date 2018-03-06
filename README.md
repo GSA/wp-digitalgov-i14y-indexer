@@ -1,6 +1,6 @@
-# DigitalGov Search Indexer for WordPress
+# Search.gov Indexer for WordPress
 
-> The DigitalGov Search indexer allows WordPress administrators to index the posts and pages of their WordPress blog or website with the DigitalGov Search hosted search service.
+> This Search.gov indexer allows WordPress administrators to index the posts and pages of their WordPress blog or website with the Search.gov hosted search service.
 
 ### Installation
 
@@ -34,7 +34,7 @@ $ rm -f dgsearch.zip # cleanup
 
 ### Credentials
 
-To create keys for your website, log in to the search administration portal ([https://search.usa.gov/admin](https://search.usa.gov/admin)) and navigate to `Content -> i14y Drawers`. Once you've created a new drawer, you will receive an API token which is used to authenticate your WordPress website with our search service.
+To find the credentials for your website, log in to the search Admin Center ([https://search.usa.gov/sites](https://search.usa.gov/sites)) and navigate to `Content -> i14y Drawers`. Once you've created a new drawer, you will receive an API token which is used to authenticate your WordPress website with our service.
 
 ### Version
 
