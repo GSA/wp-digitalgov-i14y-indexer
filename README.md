@@ -1,4 +1,4 @@
-# Search.gov Indexer for WordPress
+# Search.gov Indexer for WordPress - this is an untested Alpha
 
 > This Search.gov indexer allows WordPress administrators to index the posts and pages of their WordPress blog or website with the Search.gov hosted search service.
 
